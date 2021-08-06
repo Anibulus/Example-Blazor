@@ -1,0 +1,59 @@
+@using Business;
+@using Entities;
+
+@inject NavigationManager NavManager
+
+<div>
+    <EditForm Model="oProduct">
+        <div class="form-group">
+            <label>Referencia: </label>
+            <input type="text" @bind="@oProduct.ProductId" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Nombre: </label>
+            <input type="text"  @bind="@oProduct.ProductName" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Descripcion: </label>
+            <textarea @bind="@oProduct.ProductDescription" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Categoría: </label>
+            <select @bind="@oProduct.CategoryId" class="form-control">
+                @foreach(var category in categories)
+                {
+                    <option value="@category.CategoryId">@category.CategoryName</option>
+                }
+            </select>
+        </div>
+
+        <input type="button" value="Agregar Producto" @onClick="SaveProduct" />
+    </EditForm>
+</div>
+
+@code
+{
+    
+    ProductEntity oProduct=new ProductEntity();
+    List<CategoryEntity> categories=new List<CategoryEntity>();
+
+    private void SaveProduct()
+    {
+        /*
+        using(var p=new ProductDAO())
+        {
+            p.CreateItem(oProduct);
+        }*/
+        //Redireccionamiento
+        NavManager.NavigateTo("Product/List");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using(var cDAO=new CategoryDAO())
+        {
+            categories=cDAO.ItemList();
+        }
+    }
+    
+}

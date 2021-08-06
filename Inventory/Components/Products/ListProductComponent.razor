@@ -1,0 +1,87 @@
+@using Entities;
+@using Business;
+@using System;
+
+<select class="form-control" @onchange="CategoryChanged">
+    <option value="n" hidden selected>Seleccione categoría</option>
+    @foreach(var category in categories)
+    {
+        <option value="@category.CategoryId">@category.CategoryName</option>
+    }
+</select>
+
+<hr/>
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Referencia</th>
+            <th>Nombre producto</th>
+            <th>Descripción del producto</th>
+            <th>Categoría</th>
+            <th>Editar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var product in products)
+        {
+            <tr>
+                <td>@product.ProductId</td>
+                <td>@product.ProductName</td>
+                <td>@product.ProductDescription</td>
+                <td>@product.CategoryId</td>
+                <td><a href="Product/Update/@product.ProductId">Editar</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+@message
+
+
+@code
+{
+    string message;
+    List<ProductEntity> products=new List<ProductEntity>();
+    List<ProductEntity> tempProducts=new List<ProductEntity>();
+    List<CategoryEntity> categories=new List<CategoryEntity>();
+    protected override async Task OnInitializedAsync()
+    {
+        try{
+        /*using(var pdao=new ProductDAO())
+        {
+            products=pdao.ItemList();
+            
+            tempProducts=products;
+        }*/
+        Console.WriteLine(products.Count());
+        products=ProductDAO.Listado();
+        Console.WriteLine(products.Count());
+        /*
+        using(var cDAO=new CategoryDAO())
+        {
+            categories=cDAO.ItemList();
+        }*/
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Hubo un eror");
+            //return new ExceptionResult(e, true);
+        }
+    }
+
+    //De esta manera o tiene el id de la categoria seleccionado
+    private void CategoryChanged(ChangeEventArgs e)
+    {
+        var id = e.Value.ToString();
+        message=id;
+        if (id != "n")
+        {
+            tempProducts = products.Where(c => c.CategoryId == id).ToList();
+        }
+        else
+        {
+            tempProducts = products;
+        }
+    }
+
+}

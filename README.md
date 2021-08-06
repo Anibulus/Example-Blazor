@@ -1,0 +1,1 @@
+Es una aplicación en Blazor Web Assembly que implementa una Librería de Clases que contiene las entidades de la aplicación. Todo en .net 5.0 y Entity Famework.
